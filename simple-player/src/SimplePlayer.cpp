@@ -5,16 +5,22 @@
 
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QGroupBox>
+#include <QGraphicsRectItem>
+#include <QGraphicsProxyWidget>
 
 #include <VLCQtCore/Common.h>
 #include <VLCQtCore/Instance.h>
 #include <VLCQtCore/Media.h>
 #include <VLCQtCore/MediaPlayer.h>
 
+#include <VLCQtWidgets/WidgetVideo.h>
+
 #include "EqualizerDialog.h"
 
 #include "SimplePlayer.h"
 #include "ui_SimplePlayer.h"
+#include "graphicsscene.h"
 
 SimplePlayer::SimplePlayer(QWidget *parent)
     : QMainWindow(parent),
@@ -22,14 +28,38 @@ SimplePlayer::SimplePlayer(QWidget *parent)
       _media(0),
       _equalizerDialog(new EqualizerDialog(this))
 {
+    qDebug( "C Style Debug Message" );
+
     ui->setupUi(this);
 
     _instance = new VlcInstance(VlcCommon::args(), this);
     _player = new VlcMediaPlayer(_instance);
-    _player->setVideoWidget(ui->video);
     _equalizerDialog->setMediaPlayer(_player);
+    //_player->setVideoWidget(ui->video);
 
-    ui->video->setMediaPlayer(_player);
+    GraphicsScene * scene = new GraphicsScene();
+
+    // move the video into the graphics view by setting it as it's parents. Works, but doesn't seem to be part of scene so z-index doesnt overlay rect
+    //ui->video->setParent(ui->graphicsView);
+
+    // create a rect
+    QGraphicsRectItem * item1 = new QGraphicsRectItem(0,0,100,100);
+    item1->setBrush(QBrush(Qt::red));
+    scene->addItem(item1);
+    item1->setZValue(1000);
+
+    VlcWidgetVideo * wv = new VlcWidgetVideo(ui->graphicsView);
+    //wv->setFrameRect(QRect(20,20,100,50));
+    wv->resize(2000,1000);
+    wv->setMediaPlayer(_player);
+    _player->setVideoWidget(wv);
+    QGraphicsProxyWidget * pw = scene->addWidget(wv);
+    pw->setAttribute(Qt::WA_TransparentForMouseEvents);
+    scene->setSceneRect(0,0,200,100);
+
+    ui->graphicsView->setScene(scene);
+
+    //ui->video->setMediaPlayer(_player);
     ui->volume->setMediaPlayer(_player);
     ui->volume->setVolume(50);
     ui->seek->setMediaPlayer(_player);
@@ -43,6 +73,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->pause, &QPushButton::toggled, ui->actionPause, &QAction::toggle);
     connect(ui->stop, &QPushButton::clicked, _player, &VlcMediaPlayer::stop);
     connect(ui->equalizer, &QPushButton::clicked, _equalizerDialog, &EqualizerDialog::show);
+
 }
 
 SimplePlayer::~SimplePlayer()

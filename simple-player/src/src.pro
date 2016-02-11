@@ -3,7 +3,7 @@
 # Copyright (C) 2015 Tadej Novak <tadej@tano.si>
 #
 
-TARGET      = simple-player
+# TARGET      = simple-player
 TEMPLATE    = app
 CONFIG 	   += c++11
 
@@ -11,17 +11,19 @@ QT         += widgets
 
 SOURCES    += main.cpp \
     SimplePlayer.cpp \
-    EqualizerDialog.cpp
+    EqualizerDialog.cpp \
+    graphicsscene.cpp
 
 HEADERS    += SimplePlayer.h \
-    EqualizerDialog.h
+    EqualizerDialog.h \
+    graphicsscene.h
 
 FORMS      += SimplePlayer.ui \
     EqualizerDialog.ui
 
-LIBS       += -lVLCQtCore -lVLCQtWidgets
+LIBS       += -lVLCQtCored -lVLCQtWidgetsd
 
 
 # Edit below for custom library location
-LIBS       += -L/Users/tadej/workspace/tanoprojects/install/vlc-qt/lib -lVLCQtCore -lVLCQtWidgets
-INCLUDEPATH += /Users/tadej/workspace/tanoprojects/install/vlc-qt/include
+LIBS       += -L/Software/VLC-Qt_1.0.1_win64_msvc2013/lib -lVLCQtCored -lVLCQtWidgetsd
+INCLUDEPATH += /Software/VLC-Qt_1.0.1_win64_msvc2013/include

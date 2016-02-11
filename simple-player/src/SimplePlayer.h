@@ -7,6 +7,7 @@
 #define SIMPLEPLAYER_H_
 
 #include <QMainWindow>
+#include <QGraphicsView>
 
 namespace Ui {
     class SimplePlayer;
@@ -31,6 +32,7 @@ private slots:
 
 private:
     Ui::SimplePlayer *ui;
+    QGraphicsView *graphicsView;
 
     VlcInstance *_instance;
     VlcMedia *_media;

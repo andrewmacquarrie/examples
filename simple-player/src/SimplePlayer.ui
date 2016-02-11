@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>480</height>
+    <width>1126</width>
+    <height>970</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,41 +15,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
-     <widget class="QPushButton" name="openLocal">
-      <property name="text">
-       <string>Open local file</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QPushButton" name="openUrl">
-      <property name="text">
-       <string>Open URL</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0" colspan="2">
-     <widget class="VlcWidgetVideo" name="video" native="true"/>
-    </item>
-    <item row="3" column="1">
-     <widget class="QPushButton" name="stop">
-      <property name="text">
-       <string>Stop</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="pause">
-      <property name="text">
-       <string>Pause</string>
-      </property>
-      <property name="checkable">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0" colspan="2">
+    <item row="4" column="0" colspan="2">
      <widget class="VlcWidgetVolumeSlider" name="volume" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -59,7 +25,7 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="0" colspan="2">
+    <item row="5" column="0" colspan="2">
      <widget class="VlcWidgetSeek" name="seek" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -69,10 +35,44 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="0">
+    <item row="1" column="0">
+     <widget class="QPushButton" name="openLocal">
+      <property name="text">
+       <string>Open local file</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QPushButton" name="openUrl">
+      <property name="text">
+       <string>Open URL</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="0">
      <widget class="QPushButton" name="equalizer">
       <property name="text">
        <string>Equalizer</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <widget class="QGraphicsView" name="graphicsView"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QPushButton" name="pause">
+      <property name="text">
+       <string>Pause</string>
+      </property>
+      <property name="checkable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="1">
+     <widget class="QPushButton" name="stop">
+      <property name="text">
+       <string>Stop</string>
       </property>
      </widget>
     </item>
@@ -83,8 +83,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
-     <height>22</height>
+     <width>1126</width>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -137,16 +137,6 @@
   </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>VlcWidgetVideo</class>
-   <extends>QWidget</extends>
-   <header location="global">VLCQtWidgets/WidgetVideo.h</header>
-   <container>1</container>
-   <slots>
-    <signal>fullscreen()</signal>
-    <slot>toggleFullscreen()</slot>
-   </slots>
-  </customwidget>
   <customwidget>
    <class>VlcWidgetVolumeSlider</class>
    <extends>QWidget</extends>

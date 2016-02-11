@@ -15,11 +15,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("VLC-Qt Simple Player");
     QCoreApplication::setAttribute(Qt::AA_X11InitThreads);
 
-    QApplication app(argc, argv);
-    VlcCommon::setPluginPath(app.applicationDirPath() + "/plugins");
+    QApplication a(argc, argv);
+    VlcCommon::setPluginPath(a.applicationDirPath() + "/plugins");
 
-    SimplePlayer mainWindow;
-    mainWindow.show();
+    SimplePlayer* mainWindow = new SimplePlayer();
+    mainWindow->show();
 
-    return app.exec();
+    return a.exec();
 }
