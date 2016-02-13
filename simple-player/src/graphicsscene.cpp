@@ -5,6 +5,7 @@
 #include <QPainterPath>
 #include <QWidget>
 #include <QGraphicsProxyWidget>
+#include <QGraphicsView>
 #include "qmath.h"
 
 GraphicsScene::GraphicsScene(QObject *parent) :
@@ -40,10 +41,19 @@ void GraphicsScene::addItem(QGraphicsItem * item)
     item1->setZValue(item->zValue() + 1);
 }
 
-QGraphicsProxyWidget* GraphicsScene::addWidget(QWidget * item)
+QGraphicsProxyWidget* GraphicsScene::addWidget(QWidget * widget)
 {
     // keep marker above all other items.
-    QGraphicsProxyWidget * proxy = QGraphicsScene::addWidget(item);
+    QGraphicsProxyWidget * proxy = QGraphicsScene::addWidget(widget);
+    qDebug() << proxy->zValue();
+
     item1->setZValue(proxy->zValue() + 1);
     return proxy;
+}
+
+void GraphicsScene::setOverlayScene(QGraphicsScene * scene) {
+    if (scene == m_overlayScene) return;
+    m_overlayScene = scene;
+    //connect(scene, SIGNAL(changed(QList<QRectF>)), SLOT(overlayChanged()));
+    update();
 }

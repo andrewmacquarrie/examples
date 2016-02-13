@@ -8,7 +8,7 @@ TEMPLATE = subdirs
 SUBDIRS += src
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../Users/Drew/Downloads/VLC-Qt_1.0.1_win64_msvc2013/lib/ -lVLCQtCore
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../Users/Drew/Downloads/VLC-Qt_1.0.1_win64_msvc2013/lib/ -lVLCQtCored
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../Users/Drew/Downloads/VLC-Qt_1.0.1_win64_msvc2013/lib/ -lVLCQtCore
 
 INCLUDEPATH += $$PWD/../../../Users/Drew/Downloads/VLC-Qt_1.0.1_win64_msvc2013/include
 DEPENDPATH += $$PWD/../../../Users/Drew/Downloads/VLC-Qt_1.0.1_win64_msvc2013/include

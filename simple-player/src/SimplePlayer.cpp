@@ -43,18 +43,28 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     //ui->video->setParent(ui->graphicsView);
 
     // create a rect
-    QGraphicsRectItem * item1 = new QGraphicsRectItem(0,0,100,100);
-    item1->setBrush(QBrush(Qt::red));
-    scene->addItem(item1);
-    item1->setZValue(1000);
+    //QGraphicsRectItem * item1 = new QGraphicsRectItem(0,0,100,100);
+    //item1->setBrush(QBrush(Qt::red));
+    //scene->addItem(item1);
+    //item1->setZValue(1000);
 
     VlcWidgetVideo * wv = new VlcWidgetVideo(ui->graphicsView);
     //wv->setFrameRect(QRect(20,20,100,50));
     wv->resize(2000,1000);
     wv->setMediaPlayer(_player);
     _player->setVideoWidget(wv);
-    QGraphicsProxyWidget * pw = scene->addWidget(wv);
-    pw->setAttribute(Qt::WA_TransparentForMouseEvents);
+    scene->addWidget(wv);
+
+    QGraphicsView * ogv = new QGraphicsView(ui->graphicsView);
+    QGraphicsScene * ogs = new QGraphicsScene();
+    ogs->addRect(0, 0, 100, 300, Qt::SolidLine, Qt::SolidPattern); // strut
+    ogv->setScene(ogs);
+    ogv->resize(1000,1000);
+    ogs->setSceneRect(0,0,1000,1000);
+
+
+    //QFrame f = new QFrame()
+
     scene->setSceneRect(0,0,200,100);
 
     ui->graphicsView->setScene(scene);
@@ -74,6 +84,17 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->stop, &QPushButton::clicked, _player, &VlcMediaPlayer::stop);
     connect(ui->equalizer, &QPushButton::clicked, _equalizerDialog, &EqualizerDialog::show);
 
+
+    // debug - start video automatically
+    //_media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
+    //_player->open(_media);
+
+    notification = new QGraphicsScene();
+    notification->addRect(0, 0, 10, 10, Qt::SolidLine, Qt::SolidPattern); // strut
+   // ui->graphicsView->setOverlayScene(notification);
+    scene->setOverlayScene(notification);
+
+    ui->graphicsView->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
 SimplePlayer::~SimplePlayer()

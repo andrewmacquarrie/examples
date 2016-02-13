@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1126</width>
-    <height>970</height>
+    <width>1496</width>
+    <height>1106</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -57,7 +57,7 @@
      </widget>
     </item>
     <item row="0" column="0" colspan="2">
-     <widget class="QGraphicsView" name="graphicsView"/>
+     <widget class="OverlaidGraphicsView" name="graphicsView"/>
     </item>
     <item row="2" column="0">
      <widget class="QPushButton" name="pause">
@@ -83,7 +83,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1126</width>
+     <width>1496</width>
      <height>31</height>
     </rect>
    </property>
@@ -153,6 +153,11 @@
    <extends>QWidget</extends>
    <header location="global">VLCQtWidgets/WidgetSeek.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OverlaidGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header>overlaidgraphicsview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

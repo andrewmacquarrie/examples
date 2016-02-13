@@ -12,11 +12,13 @@ QT         += widgets
 SOURCES    += main.cpp \
     SimplePlayer.cpp \
     EqualizerDialog.cpp \
-    graphicsscene.cpp
+    graphicsscene.cpp \
+    overlaidgraphicsview.cpp
 
 HEADERS    += SimplePlayer.h \
     EqualizerDialog.h \
-    graphicsscene.h
+    graphicsscene.h \
+    overlaidgraphicsview.h
 
 FORMS      += SimplePlayer.ui \
     EqualizerDialog.ui

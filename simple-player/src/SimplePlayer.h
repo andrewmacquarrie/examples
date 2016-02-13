@@ -33,6 +33,7 @@ private slots:
 private:
     Ui::SimplePlayer *ui;
     QGraphicsView *graphicsView;
+    QGraphicsScene *notification;
 
     VlcInstance *_instance;
     VlcMedia *_media;
