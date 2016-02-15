@@ -13,7 +13,6 @@
 #include <VLCQtCore/Instance.h>
 #include <VLCQtCore/Media.h>
 #include <VLCQtCore/MediaPlayer.h>
-
 #include <VLCQtWidgets/WidgetVideo.h>
 
 #include "EqualizerDialog.h"
@@ -21,6 +20,7 @@
 #include "SimplePlayer.h"
 #include "ui_SimplePlayer.h"
 #include "graphicsscene.h"
+#include "myvlcwidgetvideo.h"
 
 SimplePlayer::SimplePlayer(QWidget *parent)
     : QMainWindow(parent),
@@ -48,17 +48,17 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     //scene->addItem(item1);
     //item1->setZValue(1000);
 
-    //-VlcWidgetVideo * wv = new VlcWidgetVideo(ui->graphicsView);
+    wv = new MyVlcWidgetVideo(ui->graphicsView);
     //wv->setFrameRect(QRect(20,20,100,50));
-    //-wv->resize(2000,1000);
-    //-wv->setMediaPlayer(_player);
-    //-_player->setVideoWidget(wv);
+    wv->resize(2000,1000);
+    wv->setMediaPlayer(_player);
+    _player->setVideoWidget(wv);
     //scene->addWidget(wv);
 
+    /*
     QFrame * fr = new QFrame(ui->graphicsView);
     fr->resize(2000,1000);
     fr->setStyleSheet("background-color:black;");
-
     QGraphicsView * ogv = new QGraphicsView(ui->graphicsView);
     ogv->setStyleSheet("background-color:white;");
     QGraphicsScene * ogs = new QGraphicsScene();
@@ -70,6 +70,16 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     ogv->setSceneRect(0,0,500,500); // this one isnt transparent, it's white
     ogv->setStyleSheet("background: transparent"); // when over a QFrame, this also works. However over a VlcWidgetVideo it doesn't
     ogs->setBackgroundBrush(QBrush(QColor(0, 0, 0, 0))); // this does seem to make the scene transparent!
+    */
+
+    connect(wv, &MyVlcWidgetVideo::myMousePressedSignal, this, &SimplePlayer::videoClicked);
+
+
+    targ1 = new QLabel(ui->graphicsView);
+    targ1->setPixmap( QPixmap( "C:\\projects\\examples\\redSquare.png" ) );
+    targ2 = new QLabel(ui->graphicsView);
+    targ2->setPixmap( QPixmap( "C:\\projects\\examples\\redSquare.png" ) );
+    setTargetPosition(200,200);
 
     //ui->video->setMediaPlayer(_player);
     ui->volume->setMediaPlayer(_player);
@@ -86,10 +96,12 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->stop, &QPushButton::clicked, _player, &VlcMediaPlayer::stop);
     connect(ui->equalizer, &QPushButton::clicked, _equalizerDialog, &EqualizerDialog::show);
 
+    connect(ui->actionOpenLocal, &QAction::triggered, this, &SimplePlayer::openLocal);
+
 
     // debug - start video automatically
-    //-_media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
-    //-_player->open(_media);
+    _media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
+    _player->open(_media);
 
     //notification = new QGraphicsScene();
     //notification->addRect(0, 0, 10, 10, Qt::SolidLine, Qt::SolidPattern); // strut
@@ -133,4 +145,18 @@ void SimplePlayer::openUrl()
     _media = new VlcMedia(url, _instance);
 
     _player->open(_media);
+}
+
+void SimplePlayer::videoClicked()
+{
+    qDebug( "clicked" );
+    QPoint point = wv->lastPoint;
+
+    setTargetPosition(point.x(),point.y());
+}
+
+void SimplePlayer::setTargetPosition(int x, int y)
+{
+    targ1->setGeometry(QRect(x-50,y-3,100,6));
+    targ2->setGeometry(QRect(x-3,y-50,6,100));
 }

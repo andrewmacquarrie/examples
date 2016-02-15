@@ -11,6 +11,7 @@
 class OverlaidGraphicsView : public QGraphicsView
 {
     Q_OBJECT
+
     QGraphicsScene * m_overlayScene;
 public:
     explicit OverlaidGraphicsView(QWidget* parent = 0);

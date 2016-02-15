@@ -8,6 +8,8 @@
 
 #include <QMainWindow>
 #include <QGraphicsView>
+#include <QLabel>
+#include <myvlcwidgetvideo.h>
 
 namespace Ui {
     class SimplePlayer;
@@ -29,6 +31,7 @@ public:
 private slots:
     void openLocal();
     void openUrl();
+    void videoClicked();
 
 private:
     Ui::SimplePlayer *ui;
@@ -39,7 +42,14 @@ private:
     VlcMedia *_media;
     VlcMediaPlayer *_player;
 
+    MyVlcWidgetVideo * wv;
+
     EqualizerDialog *_equalizerDialog;
+
+    QLabel * targ1;
+    QLabel * targ2;
+
+    void setTargetPosition(int x, int y);
 };
 
 #endif // SIMPLEPLAYER_H_

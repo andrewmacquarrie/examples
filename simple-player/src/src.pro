@@ -13,12 +13,14 @@ SOURCES    += main.cpp \
     SimplePlayer.cpp \
     EqualizerDialog.cpp \
     graphicsscene.cpp \
-    overlaidgraphicsview.cpp
+    overlaidgraphicsview.cpp \
+    myvlcwidgetvideo.cpp
 
 HEADERS    += SimplePlayer.h \
     EqualizerDialog.h \
     graphicsscene.h \
-    overlaidgraphicsview.h
+    overlaidgraphicsview.h \
+    myvlcwidgetvideo.h
 
 FORMS      += SimplePlayer.ui \
     EqualizerDialog.ui
