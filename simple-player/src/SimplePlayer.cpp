@@ -37,7 +37,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     _equalizerDialog->setMediaPlayer(_player);
     //_player->setVideoWidget(ui->video);
 
-    GraphicsScene * scene = new GraphicsScene();
+    //GraphicsScene * scene = new GraphicsScene();
 
     // move the video into the graphics view by setting it as it's parents. Works, but doesn't seem to be part of scene so z-index doesnt overlay rect
     //ui->video->setParent(ui->graphicsView);
@@ -48,26 +48,28 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     //scene->addItem(item1);
     //item1->setZValue(1000);
 
-    VlcWidgetVideo * wv = new VlcWidgetVideo(ui->graphicsView);
+    //-VlcWidgetVideo * wv = new VlcWidgetVideo(ui->graphicsView);
     //wv->setFrameRect(QRect(20,20,100,50));
-    wv->resize(2000,1000);
-    wv->setMediaPlayer(_player);
-    _player->setVideoWidget(wv);
-    scene->addWidget(wv);
+    //-wv->resize(2000,1000);
+    //-wv->setMediaPlayer(_player);
+    //-_player->setVideoWidget(wv);
+    //scene->addWidget(wv);
+
+    QFrame * fr = new QFrame(ui->graphicsView);
+    fr->resize(2000,1000);
+    fr->setStyleSheet("background-color:black;");
 
     QGraphicsView * ogv = new QGraphicsView(ui->graphicsView);
+    ogv->setStyleSheet("background-color:white;");
     QGraphicsScene * ogs = new QGraphicsScene();
-    ogs->addRect(0, 0, 100, 300, Qt::SolidLine, Qt::SolidPattern); // strut
+    QGraphicsRectItem * itm = ogs->addRect(400, 400, 100, 300, Qt::SolidLine, Qt::SolidPattern); // strut
+    itm->setRect(100,100,30,30);
+    itm->setBrush(QBrush(QColor(255, 0, 0, 128)));
     ogv->setScene(ogs);
-    ogv->resize(1000,1000);
-    ogs->setSceneRect(0,0,1000,1000);
-
-
-    //QFrame f = new QFrame()
-
-    scene->setSceneRect(0,0,200,100);
-
-    ui->graphicsView->setScene(scene);
+    ogv->setFrameRect(QRect(0,0,1000,1000));
+    ogv->setSceneRect(0,0,500,500); // this one isnt transparent, it's white
+    ogv->setStyleSheet("background: transparent"); // when over a QFrame, this also works. However over a VlcWidgetVideo it doesn't
+    ogs->setBackgroundBrush(QBrush(QColor(0, 0, 0, 0))); // this does seem to make the scene transparent!
 
     //ui->video->setMediaPlayer(_player);
     ui->volume->setMediaPlayer(_player);
@@ -86,15 +88,15 @@ SimplePlayer::SimplePlayer(QWidget *parent)
 
 
     // debug - start video automatically
-    //_media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
-    //_player->open(_media);
+    //-_media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
+    //-_player->open(_media);
 
-    notification = new QGraphicsScene();
-    notification->addRect(0, 0, 10, 10, Qt::SolidLine, Qt::SolidPattern); // strut
+    //notification = new QGraphicsScene();
+    //notification->addRect(0, 0, 10, 10, Qt::SolidLine, Qt::SolidPattern); // strut
    // ui->graphicsView->setOverlayScene(notification);
-    scene->setOverlayScene(notification);
+    //scene->setOverlayScene(notification);
 
-    ui->graphicsView->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    //ui->graphicsView->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 }
 
 SimplePlayer::~SimplePlayer()
