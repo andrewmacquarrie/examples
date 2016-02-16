@@ -32,6 +32,7 @@ private slots:
     void openLocal();
     void setKeyframe();
     void videoClicked();
+    void interpolateKeyframes(int t);
 
 private:
     Ui::SimplePlayer *ui;

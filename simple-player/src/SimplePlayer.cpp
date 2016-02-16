@@ -60,9 +60,14 @@ SimplePlayer::SimplePlayer(QWidget *parent)
 
     connect(ui->actionOpenLocal, &QAction::triggered, this, &SimplePlayer::openLocal);
 
+    connect(_player, &VlcMediaPlayer::timeChanged, this, &SimplePlayer::interpolateKeyframes);
+
     // debug - start video automatically
     _media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
     _player->open(_media);
+    keyframes->push_back(new Keyframe(100,100,100));
+    keyframes->push_back(new Keyframe(9000,300,300));
+    keyframes->push_back(new Keyframe(15000,10,10));
 }
 
 SimplePlayer::~SimplePlayer()
@@ -92,6 +97,34 @@ void SimplePlayer::setKeyframe()
     if(!wv->lastPoint.isNull()) {
         keyframes->push_back(new Keyframe(ms,wv->lastPoint.x(),wv->lastPoint.y()));
         std::sort (keyframes->begin(), keyframes->end(), sortFn);
+    }
+}
+
+void SimplePlayer::interpolateKeyframes(int t) {
+    if(keyframes->size() < 2)
+        return;
+
+    Keyframe * last;
+    Keyframe * next;
+
+    for(int i = 1; i < keyframes->size(); i++){
+        last = keyframes->at(i-1);
+        next = keyframes->at(i);
+
+        if(last->frame <= t && next->frame >= t) {
+
+            // can interp
+
+            // get t
+            int timescale = next->frame - last->frame;
+            int timeAlong = t - last->frame;
+            double t = (double) timeAlong / (double) timescale;
+
+            int xInterp = ((next->x - last->x) * t) + last->x;
+            int yInterp = ((next->y - last->y) * t) + last->y;
+
+            setTargetPosition(xInterp, yInterp);
+        }
     }
 }
 
