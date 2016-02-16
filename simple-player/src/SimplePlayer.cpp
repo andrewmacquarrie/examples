@@ -8,6 +8,8 @@
 #include <QGroupBox>
 #include <QGraphicsRectItem>
 #include <QGraphicsProxyWidget>
+#include <QKeySequence>
+#include <QShortcut>
 
 #include <VLCQtCore/Common.h>
 #include <VLCQtCore/Instance.h>
@@ -24,8 +26,6 @@ SimplePlayer::SimplePlayer(QWidget *parent)
       ui(new Ui::SimplePlayer),
       _media(0)
 {
-    qDebug( "C Style Debug Message" );
-
     ui->setupUi(this);
 
     _instance = new VlcInstance(VlcCommon::args(), this);
@@ -44,8 +44,6 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     targ2->setPixmap( QPixmap( "C:\\projects\\examples\\redSquare.png" ) );
     setTargetPosition(200,200);
 
-    ui->volume->setMediaPlayer(_player);
-    ui->volume->setVolume(50);
     ui->seek->setMediaPlayer(_player);
 
     connect(ui->actionOpenLocal, &QAction::triggered, this, &SimplePlayer::openLocal);
@@ -75,7 +73,6 @@ void SimplePlayer::openLocal()
     QString file = QFileDialog::getOpenFileName(this, tr("Open file"), QDir::homePath(), tr("Multimedia files(*)"));
     if (file.isEmpty())
         return;
-
     _media = new VlcMedia(file, true, _instance);
     _player->open(_media);
 }
@@ -83,7 +80,6 @@ void SimplePlayer::openLocal()
 
 void SimplePlayer::videoClicked()
 {
-    qDebug( "clicked" );
     QPoint point = wv->lastPoint;
     setTargetPosition(point.x(),point.y());
 }

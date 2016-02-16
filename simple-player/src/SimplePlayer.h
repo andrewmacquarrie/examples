@@ -19,8 +19,6 @@ class VlcInstance;
 class VlcMedia;
 class VlcMediaPlayer;
 
-class EqualizerDialog;
-
 class SimplePlayer : public QMainWindow
 {
     Q_OBJECT
@@ -42,8 +40,6 @@ private:
     VlcMediaPlayer *_player;
 
     MyVlcWidgetVideo * wv;
-
-    EqualizerDialog *_equalizerDialog;
 
     QLabel * targ1;
     QLabel * targ2;
