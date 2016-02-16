@@ -19,7 +19,6 @@
 
 #include "SimplePlayer.h"
 #include "ui_SimplePlayer.h"
-#include "graphicsscene.h"
 #include "myvlcwidgetvideo.h"
 
 SimplePlayer::SimplePlayer(QWidget *parent)
