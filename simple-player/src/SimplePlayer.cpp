@@ -161,9 +161,7 @@ void SimplePlayer::readKeyframeFile()
 
 void SimplePlayer::saveKeyframeFile()
 {
-    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"),
-                                QDir::homePath(),
-                                tr("CSV (*.csv)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("CSV (*.csv)"));
     if (filename.isEmpty())
         return;
 
