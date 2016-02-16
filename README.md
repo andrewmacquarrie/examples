@@ -1,36 +1,11 @@
-# VLC-Qt Examples [![Build Status][travis-img]][travis] [![Build status][appveyor-img]][appveyor]
-[![Homepage][web-img]][web]
-[![Latest release][release-img]][release]
+# Video annotator
 
-VLC-Qt is a free library used to connect [Qt](http://qt.io) and
-[libVLC](http://videolan.org) libraries. It contains core classes for main
-media playback and also some GUI classes for faster media player development.
+This is a video annotator, to mark a point on the video e.g. for tracking.
 
-This repository contains various examples of how to use the library in your
-application.
+It's built using the VLC-Qt Example simple-player, making use of the VLC video widget for Qt:
 
-Contributions are welcome. See [CONTRIBUTING.md]
-(https://github.com/vlc-qt/examples/blob/master/CONTRIBUTING.md)
-for more details.
-
-
-## List of Examples
-  - [Simple Player](https://github.com/vlc-qt/examples/tree/master/simple-player) (MIT)
-  - [QML Player](https://github.com/vlc-qt/examples/tree/master/qml-player) (MIT)
-
+https://github.com/vlc-qt/examples
 
 ## Licensing info
 
-Each example may be used under the terms of the license noted in the
-file LICENSE.md in example subfolder.
-
-
-[web]: http://vlc-qt.tano.si
-[release]: https://github.com/vlc-qt/examples/releases
-[travis]: https://travis-ci.org/vlc-qt/examples
-[appveyor]: https://ci.appveyor.com/project/ntadej/examples
-
-[web-img]: https://img.shields.io/badge/web-vlc--qt.tano.si-green.svg
-[release-img]: https://img.shields.io/github/release/vlc-qt/examples.svg
-[travis-img]: https://travis-ci.org/vlc-qt/examples.svg?branch=master
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/p8x4yi0as9bc1ts1?svg=true
+MIT licence - for details see the licence file in simple-player folder
