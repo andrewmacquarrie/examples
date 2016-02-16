@@ -12,6 +12,7 @@
 #include <QShortcut>
 
 #include <VLCQtCore/Common.h>
+#include <VLCQtCore/Stats.h>
 #include <VLCQtCore/Instance.h>
 #include <VLCQtCore/Media.h>
 #include <VLCQtCore/MediaPlayer.h>
@@ -20,6 +21,7 @@
 #include "SimplePlayer.h"
 #include "ui_SimplePlayer.h"
 #include "myvlcwidgetvideo.h"
+#include "keyframe.h"
 
 SimplePlayer::SimplePlayer(QWidget *parent)
     : QMainWindow(parent),
@@ -30,6 +32,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
 
     _instance = new VlcInstance(VlcCommon::args(), this);
     _player = new VlcMediaPlayer(_instance);
+    keyframes = new std::vector<Keyframe*>();
 
     wv = new MyVlcWidgetVideo(ui->graphicsView);
     wv->resize(2000,1000);
@@ -50,6 +53,8 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->actionPause, &QAction::toggled, _player, &VlcMediaPlayer::togglePause);
     connect(ui->actionStop, &QAction::triggered, _player, &VlcMediaPlayer::stop);
     connect(ui->openLocal, &QPushButton::clicked, this, &SimplePlayer::openLocal);
+
+    connect(ui->setKeyframe, &QPushButton::clicked, this, &SimplePlayer::setKeyframe);
     connect(ui->pause, &QPushButton::toggled, ui->actionPause, &QAction::toggle);
     connect(ui->stop, &QPushButton::clicked, _player, &VlcMediaPlayer::stop);
 
@@ -65,6 +70,7 @@ SimplePlayer::~SimplePlayer()
     delete _player;
     delete _media;
     delete _instance;
+    delete keyframes;
     delete ui;
 }
 
@@ -75,6 +81,18 @@ void SimplePlayer::openLocal()
         return;
     _media = new VlcMedia(file, true, _instance);
     _player->open(_media);
+}
+
+bool sortFn(Keyframe * lhs, Keyframe * rhs) { return lhs->frame < rhs->frame; }
+
+void SimplePlayer::setKeyframe()
+{
+    int ms = _player->time(); // gets from in ms. Not v accurate. can interpolate, see http://stackoverflow.com/questions/11236432/how-do-i-get-libvlc-media-player-get-time-to-return-a-more-accurate-result
+    qDebug(std::to_string(ms).c_str());
+    if(!wv->lastPoint.isNull()) {
+        keyframes->push_back(new Keyframe(ms,wv->lastPoint.x(),wv->lastPoint.y()));
+        std::sort (keyframes->begin(), keyframes->end(), sortFn);
+    }
 }
 
 

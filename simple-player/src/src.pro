@@ -11,10 +11,12 @@ QT         += widgets
 
 SOURCES    += main.cpp \
     SimplePlayer.cpp \
-    myvlcwidgetvideo.cpp
+    myvlcwidgetvideo.cpp \
+    keyframe.cpp
 
 HEADERS    += SimplePlayer.h \
-    myvlcwidgetvideo.h
+    myvlcwidgetvideo.h \
+    keyframe.h
 
 FORMS      += SimplePlayer.ui
 

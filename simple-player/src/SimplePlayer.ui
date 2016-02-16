@@ -60,9 +60,9 @@
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QPushButton" name="openUrl">
+     <widget class="QPushButton" name="setKeyframe">
       <property name="text">
-       <string>Open URL</string>
+       <string>Set keyframe</string>
       </property>
      </widget>
     </item>

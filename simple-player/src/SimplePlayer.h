@@ -6,10 +6,12 @@
 #ifndef SIMPLEPLAYER_H_
 #define SIMPLEPLAYER_H_
 
+#include <vector>
 #include <QMainWindow>
 #include <QGraphicsView>
 #include <QLabel>
 #include <myvlcwidgetvideo.h>
+#include "keyframe.h"
 
 namespace Ui {
     class SimplePlayer;
@@ -28,6 +30,7 @@ public:
 
 private slots:
     void openLocal();
+    void setKeyframe();
     void videoClicked();
 
 private:
@@ -43,6 +46,8 @@ private:
 
     QLabel * targ1;
     QLabel * targ2;
+
+    std::vector<Keyframe*> * keyframes;
 
     void setTargetPosition(int x, int y);
 };
