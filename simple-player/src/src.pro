@@ -11,15 +11,12 @@ QT         += widgets
 
 SOURCES    += main.cpp \
     SimplePlayer.cpp \
-    EqualizerDialog.cpp \
     myvlcwidgetvideo.cpp
 
 HEADERS    += SimplePlayer.h \
-    EqualizerDialog.h \
     myvlcwidgetvideo.h
 
-FORMS      += SimplePlayer.ui \
-    EqualizerDialog.ui
+FORMS      += SimplePlayer.ui
 
 LIBS       += -lVLCQtCored -lVLCQtWidgetsd
 

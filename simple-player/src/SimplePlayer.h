@@ -30,7 +30,6 @@ public:
 
 private slots:
     void openLocal();
-    void openUrl();
     void videoClicked();
 
 private:
