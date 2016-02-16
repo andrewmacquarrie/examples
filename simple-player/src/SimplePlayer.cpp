@@ -8,8 +8,11 @@
 #include <QGroupBox>
 #include <QGraphicsRectItem>
 #include <QGraphicsProxyWidget>
-#include <QKeySequence>
-#include <QShortcut>
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+
 
 #include <VLCQtCore/Common.h>
 #include <VLCQtCore/Stats.h>
@@ -53,6 +56,8 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->actionPause, &QAction::toggled, _player, &VlcMediaPlayer::togglePause);
     connect(ui->actionStop, &QAction::triggered, _player, &VlcMediaPlayer::stop);
     connect(ui->openLocal, &QPushButton::clicked, this, &SimplePlayer::openLocal);
+    connect(ui->loadKeyframeFile, &QPushButton::clicked, this, &SimplePlayer::readKeyframeFile);
+    connect(ui->saveKeyframeFile, &QPushButton::clicked, this, &SimplePlayer::saveKeyframeFile);
 
     connect(ui->setKeyframe, &QPushButton::clicked, this, &SimplePlayer::setKeyframe);
     connect(ui->pause, &QPushButton::toggled, ui->actionPause, &QAction::toggle);
@@ -65,9 +70,10 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     // debug - start video automatically
     _media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
     _player->open(_media);
+    /*
     keyframes->push_back(new Keyframe(100,100,100));
     keyframes->push_back(new Keyframe(9000,300,300));
-    keyframes->push_back(new Keyframe(15000,10,10));
+    keyframes->push_back(new Keyframe(15000,10,10));*/
 }
 
 SimplePlayer::~SimplePlayer()
@@ -112,10 +118,7 @@ void SimplePlayer::interpolateKeyframes(int t) {
         next = keyframes->at(i);
 
         if(last->frame <= t && next->frame >= t) {
-
-            // can interp
-
-            // get t
+            // can interp - so get t
             int timescale = next->frame - last->frame;
             int timeAlong = t - last->frame;
             double t = (double) timeAlong / (double) timescale;
@@ -128,6 +131,51 @@ void SimplePlayer::interpolateKeyframes(int t) {
     }
 }
 
+void SimplePlayer::readKeyframeFile()
+{
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open file"), QDir::homePath(), tr("Multimedia files(*)"));
+    if (filename.isEmpty())
+        return;
+
+    std::ifstream file(filename.toStdString());
+
+    while(file) {
+        std::vector<std::string>   result;
+        std::string                line;
+        std::getline(file,line);
+
+        std::stringstream          lineStream(line);
+        std::string                cell;
+
+        std::getline(lineStream,cell,',');
+        std::string time = cell;
+        std::getline(lineStream,cell,',');
+        std::string x = cell;
+        std::getline(lineStream,cell,',');
+        std::string y = cell;
+
+        if(time != "" && x != "" && y != "")
+            keyframes->push_back(new Keyframe(std::stoi(time), std::stoi(x), std::stoi(y)));
+    }
+}
+
+void SimplePlayer::saveKeyframeFile()
+{
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"),
+                                QDir::homePath(),
+                                tr("CSV (*.csv)"));
+    if (filename.isEmpty())
+        return;
+
+    std::ofstream SaveFile(filename.toStdString());
+
+    for (int i = 0; i < keyframes->size(); i++) {
+        Keyframe * kf = keyframes->at(i);
+        SaveFile << kf->frame << "," << kf->x << "," << kf->y << std::endl;
+    }
+
+    SaveFile.close();
+}
 
 void SimplePlayer::videoClicked()
 {

@@ -33,6 +33,8 @@ private slots:
     void setKeyframe();
     void videoClicked();
     void interpolateKeyframes(int t);
+    void readKeyframeFile();
+    void saveKeyframeFile();
 
 private:
     Ui::SimplePlayer *ui;
