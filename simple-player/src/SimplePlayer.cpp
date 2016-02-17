@@ -12,6 +12,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>    // std::min
 
 
 #include <VLCQtCore/Common.h>
@@ -26,6 +27,8 @@
 #include "myvlcwidgetvideo.h"
 #include "keyframe.h"
 
+const int xVideoSize = 2000;
+
 SimplePlayer::SimplePlayer(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::SimplePlayer),
@@ -38,7 +41,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     keyframes = new std::vector<Keyframe*>();
 
     wv = new MyVlcWidgetVideo(ui->graphicsView);
-    wv->resize(2000,1000);
+    wv->resize(xVideoSize,xVideoSize/2);
     wv->setMediaPlayer(_player);
     _player->setVideoWidget(wv);
 
@@ -106,6 +109,28 @@ void SimplePlayer::setKeyframe()
     }
 }
 
+
+bool bestToWrap(int leftX, int rightX) {
+    int distOnPlane = abs(rightX - leftX);
+    int distIfWraps = (xVideoSize - rightX) + leftX;
+    return distIfWraps < distOnPlane;
+}
+
+int getXInterpWithWrap(Keyframe * last, Keyframe * next, double t){
+    int leftX = std::min(last->x, next->x);
+    int rightX = std::max(last->x, next->x);
+
+    if(bestToWrap(leftX, rightX)) {
+        int tVal = (int) ((xVideoSize - rightX + leftX) * t);
+        if(leftX == last->x)
+            return ((last->x - tVal) + xVideoSize) % xVideoSize;
+        else
+            return (last->x + tVal) % xVideoSize;
+    } else {
+        return ((rightX - leftX) * t) + leftX;
+    }
+}
+
 void SimplePlayer::interpolateKeyframes(int t) {
     if(keyframes->size() < 2)
         return;
@@ -123,8 +148,8 @@ void SimplePlayer::interpolateKeyframes(int t) {
             int timeAlong = t - last->frame;
             double t = (double) timeAlong / (double) timescale;
 
-            int xInterp = ((next->x - last->x) * t) + last->x;
             int yInterp = ((next->y - last->y) * t) + last->y;
+            int xInterp = getXInterpWithWrap(last, next, t);
 
             setTargetPosition(xInterp, yInterp);
         }
