@@ -26,6 +26,11 @@
 #include "ui_SimplePlayer.h"
 #include "myvlcwidgetvideo.h"
 #include "keyframe.h"
+#include "/Software/boost_1_59_0/boost/math/quaternion.hpp"
+
+#include <boost/units/quantity.hpp>
+#include <boost/units/systems/si/plane_angle.hpp>
+#include <boost/units/systems/angle/degrees.hpp>
 
 const int xVideoSize = 2000;
 
@@ -73,10 +78,12 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     // debug - start video automatically
     _media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
     _player->open(_media);
-    /*
-    keyframes->push_back(new Keyframe(100,100,100));
-    keyframes->push_back(new Keyframe(9000,300,300));
-    keyframes->push_back(new Keyframe(15000,10,10));*/
+
+    keyframes->push_back(new Keyframe(5,1000,400));
+    keyframes->push_back(new Keyframe(9000,1000,600));
+
+    std::ofstream SaveFile("C:\\Users\\Drew\\testkeyframeasquatfile.csv");
+    SaveFile.close();
 }
 
 SimplePlayer::~SimplePlayer()
@@ -131,6 +138,16 @@ int getXInterpWithWrap(Keyframe * last, Keyframe * next, double t){
     }
 }
 
+boost::math::quaternion<float> getAsQuaternion(int xPos, int yPos) {
+    // need to convert these to -180 -> 180 // -90 -> 90 in radians
+    const float degToRad = 57.295779513f;
+    const float rho = 1.0f; // not sure what this is. const 1 in example. May be magnitude? all results zero if set to zero
+    float lon = ((float) xPos / (float) xVideoSize) * 360.0f - 180.0f ;
+    float lat = ((float) yPos / (float) (xVideoSize / 2)) * 180.0f - 90.0f;
+    float phi = 0.0f; // not sure what this is. Roll?
+    return boost::math::spherical(rho, lat / degToRad, lon / degToRad, phi);
+}
+
 void SimplePlayer::interpolateKeyframes(int t) {
     if(keyframes->size() < 2)
         return;
@@ -152,6 +169,12 @@ void SimplePlayer::interpolateKeyframes(int t) {
             int xInterp = getXInterpWithWrap(last, next, t);
 
             setTargetPosition(xInterp, yInterp);
+            boost::math::quaternion<float> q = getAsQuaternion(xInterp, yInterp);
+
+            std::ofstream SaveFile("C:\\Users\\Drew\\testkeyframeasquatfile.csv", std::ofstream::out | std::ofstream::app);
+            // m_w(q.R_component_1()), m_x(q.R_component_2()), m_y(q.R_component_3()), m_z(q.R_component_4()) : acording to https://sourceforge.net/p/xengine/code/HEAD/tree/trunk/XEngine/include/XEngine/Math/XQuaternion.inl
+            SaveFile << q.R_component_2() << "," << q.R_component_3() << "," << q.R_component_4() << "," << q.R_component_1() * -1.0f << std::endl;
+            SaveFile.close();
         }
     }
 }

@@ -26,3 +26,5 @@ LIBS       += -lVLCQtCored -lVLCQtWidgetsd
 # Edit below for custom library location
 LIBS       += -L/Software/VLC-Qt_1.0.1_win64_msvc2013/lib -lVLCQtCored -lVLCQtWidgetsd
 INCLUDEPATH += /Software/VLC-Qt_1.0.1_win64_msvc2013/include
+
+INCLUDEPATH += /Software/boost_1_59_0/
