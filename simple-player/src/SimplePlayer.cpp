@@ -66,6 +66,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->openLocal, &QPushButton::clicked, this, &SimplePlayer::openLocal);
     connect(ui->loadKeyframeFile, &QPushButton::clicked, this, &SimplePlayer::readKeyframeFile);
     connect(ui->saveKeyframeFile, &QPushButton::clicked, this, &SimplePlayer::saveKeyframeFile);
+    connect(ui->exportTracking, &QPushButton::clicked, this, &SimplePlayer::exportTrackingCSV);
 
     connect(ui->setKeyframe, &QPushButton::clicked, this, &SimplePlayer::setKeyframe);
     connect(ui->pause, &QPushButton::toggled, ui->actionPause, &QAction::toggle);
@@ -148,35 +149,70 @@ boost::math::quaternion<float> getAsQuaternion(int xPos, int yPos) {
     return boost::math::spherical(rho, lat / degToRad, lon / degToRad, phi);
 }
 
-void SimplePlayer::interpolateKeyframes(int t) {
+bool SimplePlayer::setNextAndLastFromTime(int t, Keyframe ** last, Keyframe ** next) {
+    for(int i = 1; i < keyframes->size(); i++){
+        *last = keyframes->at(i-1);
+        *next = keyframes->at(i);
+
+        if(keyframes->at(i-1)->frame <= t && keyframes->at(i)->frame >= t) {
+            return true; // success, kf found
+        }
+    }
+
+    return false; // cant find kf
+}
+
+void getInterpolation(int time, Keyframe * last, Keyframe * next, int * x, int * y) {
+    int timescale = next->frame - last->frame;
+    int timeAlong = time - last->frame;
+    double t = (double) timeAlong / (double) timescale;
+
+    *y = ((next->y - last->y) * t) + last->y;
+    *x = getXInterpWithWrap(last, next, t);
+
+}
+
+void SimplePlayer::interpolateKeyframes(int time) {
     if(keyframes->size() < 2)
         return;
 
     Keyframe * last;
     Keyframe * next;
 
-    for(int i = 1; i < keyframes->size(); i++){
-        last = keyframes->at(i-1);
-        next = keyframes->at(i);
+    if(setNextAndLastFromTime(time, &last, &next)) {
+        int yInterp, xInterp;
+        getInterpolation(time, last, next, &xInterp, &yInterp);
+        setTargetPosition(xInterp, yInterp);
+    }
+}
 
-        if(last->frame <= t && next->frame >= t) {
-            // can interp - so get t
-            int timescale = next->frame - last->frame;
-            int timeAlong = t - last->frame;
-            double t = (double) timeAlong / (double) timescale;
+void SimplePlayer::exportTrackingCSV()
+{
+    if(keyframes->size() < 2)
+        return;
 
-            int yInterp = ((next->y - last->y) * t) + last->y;
-            int xInterp = getXInterpWithWrap(last, next, t);
+    QString filename = QFileDialog::getSaveFileName(this, tr("Save File"), QDir::homePath(), tr("CSV (*.csv)"));
+    if (filename.isEmpty())
+        return;
 
-            setTargetPosition(xInterp, yInterp);
+    int fps = std::stoi(ui->fpsEntry->text().toStdString());
+    float ms = (1.0f / (float) fps) * 1000; // s -> ms
+
+    std::ofstream SaveFile(filename.toStdString());
+
+    for(float time = 1; time < _player->length(); time = time + ms){
+        Keyframe * last;
+        Keyframe * next;
+
+        if(setNextAndLastFromTime(time, &last, &next)) {
+            int yInterp, xInterp;
+            getInterpolation(time, last, next, &xInterp, &yInterp);
             boost::math::quaternion<float> q = getAsQuaternion(xInterp, yInterp);
-
-            std::ofstream SaveFile("C:\\Users\\Drew\\testkeyframeasquatfile.csv", std::ofstream::out | std::ofstream::app);
             // m_w(q.R_component_1()), m_x(q.R_component_2()), m_y(q.R_component_3()), m_z(q.R_component_4()) : acording to https://sourceforge.net/p/xengine/code/HEAD/tree/trunk/XEngine/include/XEngine/Math/XQuaternion.inl
             SaveFile << q.R_component_2() << "," << q.R_component_3() << "," << q.R_component_4() << "," << q.R_component_1() * -1.0f << std::endl;
-            SaveFile.close();
         }
     }
+    SaveFile.close();
 }
 
 void SimplePlayer::readKeyframeFile()

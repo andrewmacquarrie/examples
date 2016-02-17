@@ -35,6 +35,7 @@ private slots:
     void interpolateKeyframes(int t);
     void readKeyframeFile();
     void saveKeyframeFile();
+    void exportTrackingCSV();
 
 private:
     Ui::SimplePlayer *ui;
@@ -53,6 +54,7 @@ private:
     std::vector<Keyframe*> * keyframes;
 
     void setTargetPosition(int x, int y);
+    bool setNextAndLastFromTime(int t, Keyframe ** last, Keyframe ** next);
 };
 
 #endif // SIMPLEPLAYER_H_
