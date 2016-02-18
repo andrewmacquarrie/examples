@@ -77,14 +77,12 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(_player, &VlcMediaPlayer::timeChanged, this, &SimplePlayer::interpolateKeyframes);
 
     // debug - start video automatically
-    _media = new VlcMedia("C:\\Users\\Drew\\Desktop\\Diving_with_Great_White_Shark_Part1.mp4", true, _instance);
+    _media = new VlcMedia("C:\\projects\\omiplayerOmni\\Videos\\horror\\horrorCut.mp4", true, _instance);
     _player->open(_media);
 
+    /*
     keyframes->push_back(new Keyframe(5,1000,400));
-    keyframes->push_back(new Keyframe(9000,1000,600));
-
-    std::ofstream SaveFile("C:\\Users\\Drew\\testkeyframeasquatfile.csv");
-    SaveFile.close();
+    keyframes->push_back(new Keyframe(9000,1000,600));*/
 }
 
 SimplePlayer::~SimplePlayer()
@@ -145,8 +143,17 @@ boost::math::quaternion<float> getAsQuaternion(int xPos, int yPos) {
     const float rho = 1.0f; // not sure what this is. const 1 in example. May be magnitude? all results zero if set to zero
     float lon = ((float) xPos / (float) xVideoSize) * 360.0f - 180.0f ;
     float lat = ((float) yPos / (float) (xVideoSize / 2)) * 180.0f - 90.0f;
+
+    lon = lon * 0.5f; // why?
+    lat = lat * 0.5f; // why? - but seems to produce correct rotation in omiplayerOmni?
+
     float phi = 0.0f; // not sure what this is. Roll?
-    return boost::math::spherical(rho, lat / degToRad, lon / degToRad, phi);
+
+    boost::math::quaternion<float> yaw = boost::math::spherical(rho, 0.0f, lon / degToRad, phi);
+    boost::math::quaternion<float> pitch = boost::math::spherical(rho, lat / degToRad, 0.0f, phi);
+
+
+    return pitch * yaw;
 }
 
 bool SimplePlayer::setNextAndLastFromTime(int t, Keyframe ** last, Keyframe ** next) {
@@ -169,7 +176,6 @@ void getInterpolation(int time, Keyframe * last, Keyframe * next, int * x, int *
 
     *y = ((next->y - last->y) * t) + last->y;
     *x = getXInterpWithWrap(last, next, t);
-
 }
 
 void SimplePlayer::interpolateKeyframes(int time) {
