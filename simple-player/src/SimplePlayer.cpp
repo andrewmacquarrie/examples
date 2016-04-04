@@ -77,7 +77,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(_player, &VlcMediaPlayer::timeChanged, this, &SimplePlayer::interpolateKeyframes);
 
     // debug - start video automatically
-    _media = new VlcMedia("C:\\projects\\omiplayerOmni\\Videos\\horror\\horrorCut.mp4", true, _instance);
+    _media = new VlcMedia("C:\\Users\\localadmin\\Desktop\\360Files\\shot1\\cam1.mp4", true, _instance);
     _player->open(_media);
 
     /*
