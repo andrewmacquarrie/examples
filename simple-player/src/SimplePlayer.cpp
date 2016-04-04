@@ -32,7 +32,7 @@
 #include <boost/units/systems/si/plane_angle.hpp>
 #include <boost/units/systems/angle/degrees.hpp>
 
-const int xVideoSize = 2000;
+const int xVideoSize = 1400;
 
 SimplePlayer::SimplePlayer(QWidget *parent)
     : QMainWindow(parent),
@@ -69,6 +69,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->exportTracking, &QPushButton::clicked, this, &SimplePlayer::exportTrackingCSV);
 
     connect(ui->setKeyframe, &QPushButton::clicked, this, &SimplePlayer::setKeyframe);
+    connect(ui->setJumpCut, &QPushButton::clicked, this, &SimplePlayer::setJumpCut);
     connect(ui->pause, &QPushButton::toggled, ui->actionPause, &QAction::toggle);
     connect(ui->stop, &QPushButton::clicked, _player, &VlcMediaPlayer::stop);
 
@@ -77,7 +78,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(_player, &VlcMediaPlayer::timeChanged, this, &SimplePlayer::interpolateKeyframes);
 
     // debug - start video automatically
-    _media = new VlcMedia("C:\\Users\\localadmin\\Desktop\\360Files\\shot1\\cam1.mp4", true, _instance);
+    _media = new VlcMedia("E:\\Videos\\RealMemories4096x2048.mp4", true, _instance);
     _player->open(_media);
 
     /*
@@ -108,8 +109,22 @@ bool sortFn(Keyframe * lhs, Keyframe * rhs) { return lhs->frame < rhs->frame; }
 void SimplePlayer::setKeyframe()
 {
     int ms = _player->time(); // gets from in ms. Not v accurate. can interpolate, see http://stackoverflow.com/questions/11236432/how-do-i-get-libvlc-media-player-get-time-to-return-a-more-accurate-result
-    qDebug(std::to_string(ms).c_str());
+
     if(!wv->lastPoint.isNull()) {
+        keyframes->push_back(new Keyframe(ms,wv->lastPoint.x(),wv->lastPoint.y()));
+        std::sort (keyframes->begin(), keyframes->end(), sortFn);
+    }
+}
+
+void SimplePlayer::setJumpCut()
+{
+    int ms = _player->time(); // gets from in ms. Not v accurate. can interpolate, see http://stackoverflow.com/questions/11236432/how-do-i-get-libvlc-media-player-get-time-to-return-a-more-accurate-result
+
+    if(!wv->lastPoint.isNull()) {
+        if(keyframes->size() > 1) {
+            Keyframe * lastKey = keyframes->back();
+            keyframes->push_back(new Keyframe(ms-1,lastKey->x,lastKey->y));
+        }
         keyframes->push_back(new Keyframe(ms,wv->lastPoint.x(),wv->lastPoint.y()));
         std::sort (keyframes->begin(), keyframes->end(), sortFn);
     }
@@ -133,7 +148,7 @@ int getXInterpWithWrap(Keyframe * last, Keyframe * next, double t){
         else
             return (last->x + tVal) % xVideoSize;
     } else {
-        return ((rightX - leftX) * t) + leftX;
+        return ((next->x - last->x) * t) + last->x;
     }
 }
 
@@ -220,6 +235,7 @@ void SimplePlayer::exportTrackingCSV()
     }
     SaveFile.close();
 }
+
 
 void SimplePlayer::readKeyframeFile()
 {

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>2026</width>
-    <height>1342</height>
+    <width>1418</width>
+    <height>910</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,21 +15,58 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="5" column="0">
-     <widget class="QPushButton" name="exportTracking">
-      <property name="text">
-       <string>Export tracking csv</string>
+    <item row="9" column="0" colspan="2">
+     <widget class="VlcWidgetSeek" name="seek" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="QPushButton" name="loadKeyframeFile">
-      <property name="text">
-       <string>Load keyframe file</string>
+    <item row="6" column="0">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>FPS:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="fpsEntry">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>25</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="exportTracking">
+        <property name="text">
+         <string>Export tracking csv</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item row="0" column="0" colspan="2">
+     <widget class="QGraphicsView" name="graphicsView">
+      <property name="minimumSize">
+       <size>
+        <width>1200</width>
+        <height>600</height>
+       </size>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
+    <item row="4" column="0">
      <widget class="QPushButton" name="pause">
       <property name="text">
        <string>Pause</string>
@@ -39,33 +76,10 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0" colspan="2">
-     <widget class="QGraphicsView" name="graphicsView">
-      <property name="minimumSize">
-       <size>
-        <width>2000</width>
-        <height>1000</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
+    <item row="4" column="1">
      <widget class="QPushButton" name="stop">
       <property name="text">
        <string>Stop</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
-     <widget class="QLineEdit" name="fpsEntry">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>25</string>
       </property>
      </widget>
     </item>
@@ -76,34 +90,35 @@
       </property>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QPushButton" name="setKeyframe">
-      <property name="text">
-       <string>Set keyframe</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="1">
+    <item row="5" column="1">
      <widget class="QPushButton" name="saveKeyframeFile">
       <property name="text">
        <string>Save keyframe file</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="0" colspan="2">
-     <widget class="VlcWidgetSeek" name="seek" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-     </widget>
+    <item row="1" column="1">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="setKeyframe">
+        <property name="text">
+         <string>Set keyframe</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="setJumpCut">
+        <property name="text">
+         <string>Set jump cut (no interpolation)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
-    <item row="4" column="1">
-     <widget class="QLabel" name="label">
+    <item row="5" column="0">
+     <widget class="QPushButton" name="loadKeyframeFile">
       <property name="text">
-       <string>FPS:</string>
+       <string>Load keyframe file</string>
       </property>
      </widget>
     </item>
@@ -114,8 +129,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>2026</width>
-     <height>31</height>
+     <width>1418</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -31,6 +31,7 @@ public:
 private slots:
     void openLocal();
     void setKeyframe();
+    void setJumpCut();
     void videoClicked();
     void interpolateKeyframes(int t);
     void readKeyframeFile();
