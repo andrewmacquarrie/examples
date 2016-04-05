@@ -137,22 +137,22 @@ bool bestToWrap(int leftX, int rightX) {
     return distIfWraps < distOnPlane;
 }
 
-int getXInterpWithWrap(Keyframe * last, Keyframe * next, double t){
+double getXInterpWithWrap(Keyframe * last, Keyframe * next, double t){
     int leftX = std::min(last->x, next->x);
     int rightX = std::max(last->x, next->x);
 
     if(bestToWrap(leftX, rightX)) {
-        int tVal = (int) ((xVideoSize - rightX + leftX) * t);
+        double tVal = ((xVideoSize - rightX + leftX) * t);
         if(leftX == last->x)
-            return ((last->x - tVal) + xVideoSize) % xVideoSize;
+            return fmod(((last->x - tVal) + xVideoSize), xVideoSize);
         else
-            return (last->x + tVal) % xVideoSize;
+            return fmod((last->x + tVal), xVideoSize);
     } else {
-        return ((next->x - last->x) * t) + last->x;
+        return ((double) (next->x - last->x) * t) + (double)  last->x;
     }
 }
 
-boost::math::quaternion<float> getAsQuaternion(int xPos, int yPos) {
+boost::math::quaternion<float> getAsQuaternion(double xPos, double yPos) {
     // need to convert these to -180 -> 180 // -90 -> 90 in radians
     const float degToRad = 57.295779513f;
     const float rho = 1.0f; // not sure what this is. const 1 in example. May be magnitude? all results zero if set to zero
@@ -184,10 +184,10 @@ bool SimplePlayer::setNextAndLastFromTime(int t, Keyframe ** last, Keyframe ** n
     return false; // cant find kf
 }
 
-void getInterpolation(int time, Keyframe * last, Keyframe * next, int * x, int * y) {
-    int timescale = next->frame - last->frame;
-    int timeAlong = time - last->frame;
-    double t = (double) timeAlong / (double) timescale;
+void getInterpolation(int time, Keyframe * last, Keyframe * next, double * x, double * y) {
+    double timescale = next->frame - last->frame;
+    double timeAlong = time - last->frame;
+    double t =  timeAlong / timescale;
 
     *y = ((next->y - last->y) * t) + last->y;
     *x = getXInterpWithWrap(last, next, t);
@@ -201,9 +201,9 @@ void SimplePlayer::interpolateKeyframes(int time) {
     Keyframe * next;
 
     if(setNextAndLastFromTime(time, &last, &next)) {
-        int yInterp, xInterp;
+        double yInterp, xInterp;
         getInterpolation(time, last, next, &xInterp, &yInterp);
-        setTargetPosition(xInterp, yInterp);
+        setTargetPosition((int) xInterp, (int) yInterp);
     }
 }
 
@@ -226,7 +226,7 @@ void SimplePlayer::exportTrackingCSV()
         Keyframe * next;
 
         if(setNextAndLastFromTime(time, &last, &next)) {
-            int yInterp, xInterp;
+            double yInterp, xInterp;
             getInterpolation(time, last, next, &xInterp, &yInterp);
             boost::math::quaternion<float> q = getAsQuaternion(xInterp, yInterp);
             // m_w(q.R_component_1()), m_x(q.R_component_2()), m_y(q.R_component_3()), m_z(q.R_component_4()) : acording to https://sourceforge.net/p/xengine/code/HEAD/tree/trunk/XEngine/include/XEngine/Math/XQuaternion.inl
