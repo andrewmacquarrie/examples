@@ -37,6 +37,9 @@ private slots:
     void readKeyframeFile();
     void saveKeyframeFile();
     void exportTrackingCSV();
+    void updateTable();
+    void gotoKeyframe();
+    void deleteKeyframe();
 
 private:
     Ui::SimplePlayer *ui;

@@ -8,12 +8,12 @@
 #include <QGroupBox>
 #include <QGraphicsRectItem>
 #include <QGraphicsProxyWidget>
+#include <QStandardItemModel>
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <algorithm>    // std::min
-
 
 #include <VLCQtCore/Common.h>
 #include <VLCQtCore/Stats.h>
@@ -71,19 +71,29 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->setKeyframe, &QPushButton::clicked, this, &SimplePlayer::setKeyframe);
     connect(ui->setJumpCut, &QPushButton::clicked, this, &SimplePlayer::setJumpCut);
     connect(ui->pause, &QPushButton::toggled, ui->actionPause, &QAction::toggle);
-    connect(ui->stop, &QPushButton::clicked, _player, &VlcMediaPlayer::stop);
+    //connect(ui->stop, &QPushButton::clicked, _player, &VlcMediaPlayer::stop);
 
     connect(ui->actionOpenLocal, &QAction::triggered, this, &SimplePlayer::openLocal);
 
     connect(_player, &VlcMediaPlayer::timeChanged, this, &SimplePlayer::interpolateKeyframes);
 
+    connect(ui->gotoKeyframe, &QPushButton::clicked, this,  &SimplePlayer::gotoKeyframe);
+    connect(ui->deleteKeyframe, &QPushButton::clicked, this,  &SimplePlayer::deleteKeyframe);
+
     // debug - start video automatically
-    _media = new VlcMedia("E:\\Videos\\RealMemories4096x2048.mp4", true, _instance);
+    _media = new VlcMedia("E:\\Videos\\RealMemories\\RMCutDownscale.mp4", true, _instance);
     _player->open(_media);
 
     /*
     keyframes->push_back(new Keyframe(5,1000,400));
     keyframes->push_back(new Keyframe(9000,1000,600));*/
+
+    ui->table->setColumnCount(3);
+    ui->table->setRowCount(10);
+    QStringList horzHeaders;
+    horzHeaders << "Time" << "X" << "Y";
+    ui->table->setHorizontalHeaderLabels( horzHeaders );
+    updateTable();
 }
 
 SimplePlayer::~SimplePlayer()
@@ -102,6 +112,27 @@ void SimplePlayer::openLocal()
         return;
     _media = new VlcMedia(file, true, _instance);
     _player->open(_media);
+}
+
+void SimplePlayer::gotoKeyframe()
+{
+    QModelIndexList selectedList = ui->table->selectionModel()->selectedRows();
+    if(selectedList.length() < 1)
+        return; // no rows selected
+    int item = selectedList.at(0).row();
+    Keyframe * kf = keyframes->at(item);
+    _player->setTime(kf->frame);
+    interpolateKeyframes(kf->frame);
+}
+
+void SimplePlayer::deleteKeyframe()
+{
+    QModelIndexList selectedList = ui->table->selectionModel()->selectedRows();
+    if(selectedList.length() < 1)
+        return; // no rows selected
+    int item_to_remove = selectedList.at(0).row();
+    keyframes->erase(keyframes->begin() + item_to_remove);
+    updateTable();
 }
 
 bool sortFn(Keyframe * lhs, Keyframe * rhs) { return lhs->frame < rhs->frame; }
@@ -194,6 +225,8 @@ void getInterpolation(int time, Keyframe * last, Keyframe * next, double * x, do
 }
 
 void SimplePlayer::interpolateKeyframes(int time) {
+    ui->timeCode->setText(QString("Time code: %1").arg(_player->time()));
+
     if(keyframes->size() < 2)
         return;
 
@@ -236,6 +269,17 @@ void SimplePlayer::exportTrackingCSV()
     SaveFile.close();
 }
 
+void SimplePlayer::updateTable()
+{
+    ui->table->clearContents();
+    ui->table->setRowCount(keyframes->size());
+    for ( int row = 0; row < keyframes->size(); ++row ) {
+         Keyframe * k = keyframes->at(row);
+         ui->table->setItem(row, 0, new QTableWidgetItem(QString::number(k->frame)));
+         ui->table->setItem(row, 1, new QTableWidgetItem(QString::number(k->x)));
+         ui->table->setItem(row, 2, new QTableWidgetItem(QString::number(k->y)));
+    }
+}
 
 void SimplePlayer::readKeyframeFile()
 {
@@ -263,6 +307,8 @@ void SimplePlayer::readKeyframeFile()
         if(time != "" && x != "" && y != "")
             keyframes->push_back(new Keyframe(std::stoi(time), std::stoi(x), std::stoi(y)));
     }
+
+    updateTable();
 }
 
 void SimplePlayer::saveKeyframeFile()
