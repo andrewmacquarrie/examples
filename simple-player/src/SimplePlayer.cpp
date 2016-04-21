@@ -81,7 +81,7 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->deleteKeyframe, &QPushButton::clicked, this,  &SimplePlayer::deleteKeyframe);
 
     // debug - start video automatically
-    _media = new VlcMedia("E:\\Videos\\RealMemories\\RMCutDownscale.mp4", true, _instance);
+    _media = new VlcMedia("E:\\Videos\\bees\\beeCut\\beeCut1Downscale.mp4", true, _instance);
     _player->open(_media);
 
     /*
@@ -145,6 +145,8 @@ void SimplePlayer::setKeyframe()
         keyframes->push_back(new Keyframe(ms,wv->lastPoint.x(),wv->lastPoint.y()));
         std::sort (keyframes->begin(), keyframes->end(), sortFn);
     }
+
+    updateTable();
 }
 
 void SimplePlayer::setJumpCut()
@@ -159,6 +161,7 @@ void SimplePlayer::setJumpCut()
         keyframes->push_back(new Keyframe(ms,wv->lastPoint.x(),wv->lastPoint.y()));
         std::sort (keyframes->begin(), keyframes->end(), sortFn);
     }
+    updateTable();
 }
 
 
