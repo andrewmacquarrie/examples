@@ -62,6 +62,10 @@ SimplePlayer::SimplePlayer(QWidget *parent)
 
     connect(ui->actionOpenLocal, &QAction::triggered, this, &SimplePlayer::openLocal);
     connect(ui->actionPause, &QAction::toggled, _player, &VlcMediaPlayer::togglePause);
+
+    connect(ui->forwardFrame, &QPushButton::clicked, this, &SimplePlayer::forwardsFrame);
+    connect(ui->backFrame, &QPushButton::clicked, this, &SimplePlayer::backwardsFrame);
+
     connect(ui->actionStop, &QAction::triggered, _player, &VlcMediaPlayer::stop);
     connect(ui->openLocal, &QPushButton::clicked, this, &SimplePlayer::openLocal);
     connect(ui->loadKeyframeFile, &QPushButton::clicked, this, &SimplePlayer::readKeyframeFile);
@@ -112,6 +116,20 @@ void SimplePlayer::openLocal()
         return;
     _media = new VlcMedia(file, true, _instance);
     _player->open(_media);
+}
+
+void SimplePlayer::backwardsFrame()
+{
+    int fps = std::stoi(ui->fpsEntry->text().toStdString());
+    int msperframe = 1000 / fps;
+    _player->setTime(_player->time() - msperframe);
+}
+
+void SimplePlayer::forwardsFrame()
+{
+    int fps = std::stoi(ui->fpsEntry->text().toStdString());
+    int msperframe = 1000 / fps;
+    _player->setTime(_player->time() + msperframe);
 }
 
 void SimplePlayer::gotoKeyframe()

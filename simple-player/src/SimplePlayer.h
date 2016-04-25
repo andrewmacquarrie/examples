@@ -40,6 +40,8 @@ private slots:
     void updateTable();
     void gotoKeyframe();
     void deleteKeyframe();
+    void backwardsFrame();
+    void forwardsFrame();
 
 private:
     Ui::SimplePlayer *ui;

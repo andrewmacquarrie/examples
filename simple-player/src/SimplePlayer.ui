@@ -34,28 +34,68 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
-             <widget class="QPushButton" name="openLocal">
-              <property name="text">
-               <string>Open local file</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="pause">
-              <property name="text">
-               <string>Play/Pause</string>
-              </property>
-              <property name="checkable">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="timeCode">
-              <property name="text">
-               <string>Time code:</string>
-              </property>
-             </widget>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <item>
+                 <widget class="QPushButton" name="pause">
+                  <property name="text">
+                   <string>Play/Pause</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="openLocal">
+                  <property name="text">
+                   <string>Open local file</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="timeCode">
+                  <property name="text">
+                   <string>Time code:</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QPushButton" name="backFrame">
+                  <property name="text">
+                   <string>Back frame</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="backTC">
+                  <property name="text">
+                   <string>Back 1 time code</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="forwardTC">
+                  <property name="text">
+                   <string>Forward 1 time code</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="forwardFrame">
+                  <property name="text">
+                   <string>Forward frame</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </item>
             <item>
              <layout class="QVBoxLayout" name="verticalLayout">
@@ -91,7 +131,7 @@
                    </sizepolicy>
                   </property>
                   <property name="text">
-                   <string>25</string>
+                   <string>30</string>
                   </property>
                  </widget>
                 </item>
