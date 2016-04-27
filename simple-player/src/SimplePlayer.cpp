@@ -172,10 +172,13 @@ void SimplePlayer::setJumpCut()
     int ms = _player->time(); // gets from in ms. Not v accurate. can interpolate, see http://stackoverflow.com/questions/11236432/how-do-i-get-libvlc-media-player-get-time-to-return-a-more-accurate-result
 
     if(!wv->lastPoint.isNull()) {
-        if(keyframes->size() > 1) {
-            Keyframe * lastKey = keyframes->back();
+        Keyframe * lastKey = getFrameBeforeTime(ms);
+        if(lastKey != NULL){
             keyframes->push_back(new Keyframe(ms-1,lastKey->x,lastKey->y));
+        } else {
+            qDebug("No previous frame found - just adding normal cut");
         }
+
         keyframes->push_back(new Keyframe(ms,wv->lastPoint.x(),wv->lastPoint.y()));
         std::sort (keyframes->begin(), keyframes->end(), sortFn);
     }
@@ -234,6 +237,20 @@ bool SimplePlayer::setNextAndLastFromTime(int t, Keyframe ** last, Keyframe ** n
     }
 
     return false; // cant find kf
+}
+
+Keyframe* SimplePlayer::getFrameBeforeTime(int t) {
+    std::sort (keyframes->begin(), keyframes->end(), sortFn);
+
+    for(int i = keyframes->size()-1; i >= 0; i--){
+        Keyframe * kf = keyframes->at(i);
+
+        if(t >= kf->frame) {
+            return kf; // success, kf found
+        }
+    }
+
+    return NULL; // cant find kf
 }
 
 void getInterpolation(int time, Keyframe * last, Keyframe * next, double * x, double * y) {

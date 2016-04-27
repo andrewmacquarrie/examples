@@ -61,6 +61,7 @@ private:
 
     void setTargetPosition(int x, int y);
     bool setNextAndLastFromTime(int t, Keyframe ** last, Keyframe ** next);
+    Keyframe * getFrameBeforeTime(int t);
 };
 
 #endif // SIMPLEPLAYER_H_
