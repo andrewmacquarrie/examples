@@ -71,6 +71,8 @@ SimplePlayer::SimplePlayer(QWidget *parent)
     connect(ui->loadKeyframeFile, &QPushButton::clicked, this, &SimplePlayer::readKeyframeFile);
     connect(ui->saveKeyframeFile, &QPushButton::clicked, this, &SimplePlayer::saveKeyframeFile);
     connect(ui->exportTracking, &QPushButton::clicked, this, &SimplePlayer::exportTrackingCSV);
+    connect(ui->table, &QTableWidget::cellChanged, this, &SimplePlayer::tableValueChanged);
+    ignoreCellChanges = false;
 
     connect(ui->setKeyframe, &QPushButton::clicked, this, &SimplePlayer::setKeyframe);
     connect(ui->setJumpCut, &QPushButton::clicked, this, &SimplePlayer::setJumpCut);
@@ -165,6 +167,27 @@ void SimplePlayer::setKeyframe()
     }
 
     updateTable();
+}
+
+void SimplePlayer::tableValueChanged(int row, int col){
+    if(ignoreCellChanges)
+        return;
+
+    Keyframe * kf = keyframes->at(row);
+    QString sval = ui->table->model()->data(ui->table->model()->index(row,col)).toString();
+    int val = sval.toInt();
+
+    switch(col) {
+        case 0 :
+            kf->frame = val;
+            break;
+        case 1 :
+            kf->x = val;
+            break;
+        case 2 :
+            kf->y = val;
+            break;
+    }
 }
 
 void SimplePlayer::setJumpCut()
@@ -309,6 +332,7 @@ void SimplePlayer::exportTrackingCSV()
 
 void SimplePlayer::updateTable()
 {
+    ignoreCellChanges = true;
     ui->table->clearContents();
     ui->table->setRowCount(keyframes->size());
     for ( int row = 0; row < keyframes->size(); ++row ) {
@@ -317,6 +341,7 @@ void SimplePlayer::updateTable()
          ui->table->setItem(row, 1, new QTableWidgetItem(QString::number(k->x)));
          ui->table->setItem(row, 2, new QTableWidgetItem(QString::number(k->y)));
     }
+    ignoreCellChanges = false;
 }
 
 void SimplePlayer::readKeyframeFile()

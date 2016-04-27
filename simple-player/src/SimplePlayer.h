@@ -42,6 +42,7 @@ private slots:
     void deleteKeyframe();
     void backwardsFrame();
     void forwardsFrame();
+    void tableValueChanged(int row, int col);
 
 private:
     Ui::SimplePlayer *ui;
@@ -56,6 +57,8 @@ private:
 
     QLabel * targ1;
     QLabel * targ2;
+
+    bool ignoreCellChanges;
 
     std::vector<Keyframe*> * keyframes;
 
